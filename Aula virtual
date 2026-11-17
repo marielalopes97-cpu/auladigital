@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula Digital Alto Guayabal</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+  body { background: #f4f1e8; color: #2e3b2e; min-height: 100vh; display: flex; flex-direction: column; }
+  header { background: #3d6b35; color: #fff; padding: 18px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,.2); }
+  header h1 { font-size: 1.5rem; }
+  header p { font-size: .85rem; opacity: .9; margin-top: 4px; }
+  main { flex: 1; padding: 20px; max-width: 900px; margin: 0 auto; width: 100%; }
+  .pantalla { display: none; }
+  .pantalla.activa { display: block; animation: fade .3s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: none;} }
+  .menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 10px; }
+  .tarjeta { background: #fff; border-radius: 16px; padding: 26px 18px; text-align: center; cursor: pointer; border: 3px solid #d9d2be; transition: .2s; box-shadow: 0 3px 8px rgba(0,0,0,.08); }
+  .tarjeta:hover { transform: translateY(-4px); border-color: #3d6b35; }
+  .tarjeta .icono { font-size: 3rem; display: block; margin-bottom: 10px; }
+  .tarjeta h2 { font-size: 1.15rem; color: #3d6b35; }
+  .tarjeta p { font-size: .8rem; color: #6b6b5e; margin-top: 6px; }
+  .btn-volver { background: #8a6d3b; color: #fff; border: none; padding: 10px 18px; border-radius: 10px; cursor: pointer; font-size: .9rem; margin-bottom: 16px; }
+  .btn-volver:hover { background: #6f572e; }
+  h2.titulo { color: #3d6b35; margin-bottom: 16px; font-size: 1.3rem; }
+  /* Lectura */
+  .grilla-palabras { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; }
+  .palabra { background: #fff; border-radius: 14px; padding: 20px 10px; text-align: center; border: 3px solid #d9d2be; cursor: pointer; transition: .2s; }
+  .palabra:hover { border-color: #e0a800; transform: scale(1.03); }
+  .palabra .dibujo { font-size: 3rem; }
+  .palabra .texto { font-size: 1.3rem; font-weight: bold; color: #3d6b35; margin-top: 8px; }
+  .palabra.seleccionada { border-color: #3d6b35; background: #eef5ea; }
+  .instruccion { background: #fff8e1; border-left: 5px solid #e0a800; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: .9rem; }
+  /* Matemáticas */
+  .pregunta { background: #fff; border-radius: 14px; padding: 22px; margin-bottom: 14px; border: 3px solid #d9d2be; }
+  .pregunta h3 { font-size: 1.8rem; text-align: center; color: #3d6b35; margin-bottom: 14px; }
+  .opciones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .opciones button { padding: 14px; font-size: 1.2rem; font-weight: bold; border: 3px solid #d9d2be; background: #f9f7ef; border-radius: 12px; cursor: pointer; transition: .15s; }
+  .opciones button:hover { border-color: #3d6b35; }
+  .opciones button.correcta { background: #a5d6a7; border-color: #3d6b35; }
+  .opciones button.incorrecta { background: #ef9a9a; border-color: #c62828; }
+  .resultado { background: #3d6b35; color: #fff; padding: 16px; border-radius: 12px; text-align: center; font-size: 1.1rem; margin-top: 10px; display: none; }
+  /* Cuento */
+  .cuento { background: #fff; border-radius: 14px; padding: 24px; border: 3px solid #d9d2be; line-height: 1.7; font-size: 1.05rem; }
+  .cuento .emoji-grande { font-size: 3.5rem; text-align: center; display: block; margin-bottom: 14px; }
+  .cuento h3 { color: #3d6b35; margin-bottom: 10px; text-align: center; }
+  footer { text-align: center; padding: 14px; font-size: .75rem; color: #6b6b5e; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🌱 Aula Digital Alto Guayabal</h1>
+  <p>Aprender sin internet · Escuela Multigrado</p>
+</header>
+
+<main>
+
+  <!-- MENÚ PRINCIPAL -->
+  <section id="menu" class="pantalla activa">
+    <div class="menu">
+      <div class="tarjeta" onclick="ir('lectura')">
+        <span class="icono">📖</span>
+        <h2>Lectura</h2>
+        <p>Asocia palabras con dibujos</p>
+      </div>
+      <div class="tarjeta" onclick="ir('matematicas')">
+        <span class="icono">🔢</span>
+        <h2>Matemáticas</h2>
+        <p>Sumas y puntaje</p>
+      </div>
+      <div class="tarjeta" onclick="ir('cuento')">
+        <span class="icono">📚</span>
+        <h2>Cuento</h2>
+        <p>Lee y descubre</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LECTURA -->
+  <section id="lectura" class="pantalla">
+    <button class="btn-volver" onclick="ir('menu')">← Volver al menú</button>
+    <h2 class="titulo">📖 Lectura: toca el dibujo y su palabra</h2>
+    <div class="instruccion">Toca cada dibujo para escuchar y leer su nombre. Luego, toca la palabra que corresponda.</div>
+    <div class="grilla-palabras" id="grillaPalabras"></div>
+  </section>
+
+  <!-- MATEMÁTICAS -->
+  <section id="matematicas" class="pantalla">
+    <button class="btn-volver" onclick="ir('menu')">← Volver al menú</button>
+    <h2 class="titulo">🔢 Matemáticas: resuelve las sumas</h2>
+    <div class="instruccion">Elige la respuesta correcta. Al final verás tu puntaje.</div>
+    <div id="contenedorPreguntas"></div>
+    <div id="resultado" class="resultado"></div>
+  </section>
+
+  <!-- CUENTO -->
+  <section id="cuento" class="pantalla">
+    <button class="btn-volver" onclick="ir('menu')">← Volver al menú</button>
+    <h2 class="titulo">📚 Cuento: El maíz que creció</h2>
+    <div class="cuento">
+      <span class="emoji-grande">🌽👦</span>
+      <h3>El maíz que creció</h3>
+      <p>En la montaña de Alto Guayabal, un niño llamado Tito sembró un grano de maíz. Cada mañana lo visitaba y le hablaba. El sol lo calentaba y la lluvia lo regaba. Un día, una pequeña planta verde salió de la tierra.</p>
+      <p>—¡Creció! —gritó Tito, feliz.</p>
+      <p>Con el tiempo, la planta se hizo alta y dio muchas mazorcas. Tito compartió el maíz con su familia y con sus amigos de la escuela. Aprendió que con paciencia y cuidado, las cosas pequeñas se vuelven grandes.</p>
+      <p style="margin-top:14px; font-style:italic; color:#3d6b35;"><strong>Pregunta para pensar:</strong> ¿Qué necesita una planta para crecer? ¿Y qué necesitas tú para aprender?</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>Prototipo educativo offline · Informática Educativa · UDELAS</footer>
+
+<script>
+/* ===== NAVEGACIÓN ===== */
+function ir(id) {
+  document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+  document.getElementById(id).classList.add('activa');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ===== LECTURA ===== */
+const palabras = [
+  { texto: 'sol', dibujo: '☀️' },
+  { texto: 'casa', dibujo: '🏠' },
+  { texto: 'pez', dibujo: '🐟' },
+  { texto: 'libro', dibujo: '📕' },
+  { texto: 'rana', dibujo: '🐸' },
+  { texto: 'maíz', dibujo: '🌽' }
+];
+
+const grilla = document.getElementById('grillaPalabras');
+palabras.forEach(p => {
+  const div = document.createElement('div');
+  div.className = 'palabra';
+  div.innerHTML = `<div class="dibujo">${p.dibujo}</div><div class="texto">${p.texto}</div>`;
+  div.onclick = () => {
+    document.querySelectorAll('.palabra').forEach(x => x.classList.remove('seleccionada'));
+    div.classList.add('seleccionada');
+    hablar(p.texto);
+  };
+  grilla.appendChild(div);
+});
+
+function hablar(texto) {
+  if ('speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance(texto);
+    u.lang = 'es-ES';
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+  }
+}
+
+/* ===== MATEMÁTICAS ===== */
+const preguntas = [
+  { a: 3, b: 4, opciones: [5, 7, 9], correcta: 7 },
+  { a: 5, b: 6, opciones: [10, 11, 12], correcta: 11 },
+  { a: 8, b: 7, opciones: [13, 15, 16], correcta: 15 },
+  { a: 9, b: 5, opciones: [12, 14, 16], correcta: 14 },
+  { a: 10, b: 8, opciones: [16, 18, 20], correcta: 18 }
+];
+
+let correctas = 0;
+let respondidas = 0;
+const contenedor = document.getElementById('contenedorPreguntas');
+
+preguntas.forEach((p, i) => {
+  const div = document.createElement('div');
+  div.className = 'pregunta';
+  div.innerHTML = `<h3>${p.a} + ${p.b} = ?</h3>`;
+  const ops = document.createElement('div');
+  ops.className = 'opciones';
+  p.opciones.forEach(op => {
+    const btn = document.createElement('button');
+    btn.textContent = op;
+    btn.onclick = () => {
+      if (div.dataset.respondida) return;
+      div.dataset.respondida = '1';
+      respondidas++;
+      if (op === p.correcta) {
+        btn.classList.add('correcta');
+        correctas++;
+      } else {
+        btn.classList.add('incorrecta');
+        ops.querySelectorAll('button').forEach(b => {
+          if (Number(b.textContent) === p.correcta) b.classList.add('correcta');
+        });
+      }
+      ops.querySelectorAll('button').forEach(b => b.disabled = true);
+      if (respondidas === preguntas.length) {
+        const res = document.getElementById('resultado');
+        res.style.display = 'block';
+        res.textContent = `🎉 Terminaste. Acertaste ${correctas} de ${preguntas.length}.`;
+      }
+    };
+    ops.appendChild(btn);
+  });
+  div.appendChild(ops);
+  contenedor.appendChild(div);
+});
+</script>
+</body>
+</html>
